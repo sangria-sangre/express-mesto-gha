@@ -26,12 +26,12 @@ module.exports.deleteCard = (req, res) => {
   cardSchema.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Передан несуществующий _id карточки.' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
       }
       res.send({ card })
     })
-    .catch(() => {
-      if (res.status(400)) {
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточка с указанным _id не найдена.' })
       }
       res.status(500).send({ message: 'Ошибка по умолчанию.' });
@@ -50,8 +50,8 @@ module.exports.likeCard = (req, res) => {
       }
       res.send({ card })
     })
-    .catch(() => {
-      if (res.status(400)) {
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка.' })
       }
       res.status(500).send({ message: 'Ошибка по умолчанию.' });
@@ -70,8 +70,8 @@ module.exports.dislikeCard = (req, res) => {
     }
     res.send({ card })
   })
-  .catch(() => {
-    if (res.status(400)) {
+  .catch((err) => {
+    if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(400).send({ message: 'Карточка с указанным _id не найдена.' })
     }
     res.status(500).send({ message: 'Ошибка по умолчанию.' });
