@@ -13,15 +13,15 @@ module.exports.getUserById = (req, res) => {
   userSchema.findById(userId)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' })
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' })
       }
       res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Пользователь по указанному _id не найден.' })
+        res.status(400).send({ message: 'Пользователь по указанному _id не найден.' })
       }
-      return res.status(500).send({ message: 'Ошибка по умолчанию.' })
+      res.status(500).send({ message: 'Ошибка по умолчанию.' })
     });
 };
 
@@ -31,9 +31,9 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' })
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' })
       }
-      return res.status(500).send({ message: 'Ошибка по умолчанию.' })
+      res.status(500).send({ message: 'Ошибка по умолчанию.' })
     });
 };
 
