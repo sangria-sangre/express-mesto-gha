@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/users');
 const cardRoutes = require('./routes/cards');
+const router = require('./routes/router');
 
 const {
   MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb',
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(router);
 app.use(userRoutes);
 app.use(cardRoutes);
 
