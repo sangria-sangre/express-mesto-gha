@@ -28,9 +28,11 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   userSchema.create({ name, about, avatar })
     .then((user) => res.send({ user }))
-    .catch(() => {
-      if (res.status(500)) { res.status(500).send({ message: 'Ошибка по умолчанию.' }) }
-      if (res.status(400)) { res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' }) }
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' })
+      }
+      return res.status(500).send({ message: 'Ошибка по умолчанию.' })
     });
 };
 
