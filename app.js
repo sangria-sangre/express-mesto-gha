@@ -24,9 +24,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(router);
 app.use(userRoutes);
 app.use(cardRoutes);
+app.use(router);
 
 app.listen(PORT, () => {
   console.log(`Successful listening of the application on the port ${PORT}`)
