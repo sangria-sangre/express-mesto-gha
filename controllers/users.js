@@ -10,17 +10,19 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  const { userId } = request.user._id;
+  const { userId } = req.params;
   userSchema.findById(userId)
     .then((user) => {
       if (!user) {
-        res.send({ message: 'Пользователь не найден' });
+        return res.status(400).send({ message: 'Пользователь по указанному _id не найден.' })
       }
       res.send({ user });
     })
-    .catch(() => {
-      if (res.status(500)) { res.status(500).send({ message: 'Ошибка по умолчанию.' }) }
-      if (res.status(404)) { res.status(404).send({ message: ' Пользователь по указанному _id не найден.' }) }
+    .catch((err) => {
+      if (err.name === 'DocumentNotFoundError') {
+        return res.status(400).send({ message: 'Пользователь по указанному _id не найден.' })
+      }
+      return res.status(500).send({ message: 'Ошибка по умолчанию.' })
     });
 };
 
