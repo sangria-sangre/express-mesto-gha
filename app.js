@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const router = require('./routes/router');
 const helmet = require('helmet');
+const { errors } = require('celebrate');
+const {createUser, login} = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const {
   MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb',
@@ -16,17 +19,22 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect(MONGO_URL);
+app.post('/signin', login);
+app.post('/signup', createUser);
+app.use(auth);
+app.use(router);
+app.use(errors());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6485dd5f6fd0abd5f53382d2'
-  };
-  next();
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message
+    });
 });
 
-app.use(router);
-
+mongoose.connect(MONGO_URL);
 app.listen(PORT, () => {
   console.log(`Successful listening of the application on the port ${PORT}`)
 })
