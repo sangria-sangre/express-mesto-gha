@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const {createUser, login} = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { loginValidate, createUserValidate } = require('../middlewares/celebrate');
 
 const {
   MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb',
@@ -19,8 +20,8 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', loginValidate, login);
+app.post('/signup', createUserValidate, createUser);
 app.use(auth);
 app.use(router);
 app.use(errors());
