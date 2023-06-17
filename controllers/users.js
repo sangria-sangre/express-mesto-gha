@@ -36,7 +36,7 @@ module.exports.createUser = (req, res, next) => {
       name, about, avatar, email,
       password: hash
     }))
-    .then(() => res.status(201).send({ data: name, about, avatar, email }))
+    .then(() => res.status(201).send({ email, name, about, avatar,  }))
     .catch((err) => {
       if (err.code === 11000) {
         return next(new ConflictError409('Пользователь с данным email уже был зарегестрирован.'));
