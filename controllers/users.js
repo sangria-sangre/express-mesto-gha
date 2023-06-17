@@ -32,19 +32,21 @@ module.exports.getUserById = (req, res, next) => {
 module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   bcrypt.hash(password, 10)
-    .then(hash => userSchema.create({
-      name, about, avatar, email,
-      password: hash
-    }))
-    .then(() => res.status(201).send({ email, name, about, avatar,  }))
-    .catch((err) => {
-      if (err.code === 11000) {
-        return next(new ConflictError409('Пользователь с данным email уже был зарегестрирован.'));
-      } else if (err.name === 'ValidationError') {
-        return next(new BadRequestError400('Переданы некорректные данные при создании пользователя.'));
-      } else {
-        return next(err);
-      }
+    .then((hash) => {
+      userSchema.create({
+        name, about, avatar, email,
+        password: hash
+      })
+        .then(() => res.status(201).send({ email, name, about, avatar, }))
+        .catch((err) => {
+          if (err.code === 11000) {
+            return next(new ConflictError409('Пользователь с данным email уже был зарегестрирован.'));
+          } else if (err.name === 'ValidationError') {
+            return next(new BadRequestError400('Переданы некорректные данные при создании пользователя.'));
+          } else {
+            return next(err);
+          }
+        });
     })
     .catch(next);
 };
@@ -92,8 +94,10 @@ module.exports.login = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
   userSchema.findById(req.user._id)
-    .orFail(new Error('NotFound'))
     .then((user) => {
+      if (!user) {
+        throw new NotFoundError404('Пользователь не найден.');
+      }
       res.status(200).send(user);
     })
     .catch((err) => {
