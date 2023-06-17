@@ -26,16 +26,19 @@ module.exports.createCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   cardSchema.findById(cardId)
-    .orFail(new Error('NotValidId'))
     .then((card) => {
+      if(!card){
+        throw new NotFoundError404('Карточка по указанному _id не найдена.');
+      }
+
       if (!card.owner.equals(req.user._id)) {
         return next(new ForbiddenError403('Карточку невозможно удалить.'));
       }
-      return card.deleteOne().then(() => response.send({ message: 'Карточка была удалена.' }));
+      return card.deleteOne().then(() => res.send({ message: 'Карточка была удалена.' }));
     })
     .catch((err) => {
       if (err.message === 'NotValidId') {
-        return next(new NotFoundError404('Пользователь по указанному _id не найден.'));
+        return next(new NotFoundError404('Карточка по указанному _id не найдена.'));
       } else if (err.name === 'CastError') {
         return next(new BadRequestError400('Карточка с указанным _id не найдена.'));
       } else {
