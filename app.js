@@ -6,7 +6,7 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 const {createUser, login} = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const { loginValidate, createUserValidate } = require('../middlewares/celebrate');
+const { loginValidate, createUserValidate } = require('./middlewares/validator');
 
 const {
   MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb',
