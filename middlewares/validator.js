@@ -4,7 +4,7 @@ const link = /(https?:\/\/)(w{3}\.)?\w+[-.~:/?#[\]@!$&'()*+,;=]*#?/;
 
 module.exports.userIdValidate = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().required().length(24),
+    userId: Joi.string().length(24).hex().required(),
   }),
 })
 
@@ -30,7 +30,7 @@ module.exports.createCardValidate = celebrate({
 
 module.exports.cardIdValidate = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().length(24),
+    cardId: Joi.string().length(24).hex().required(),
   }),
 })
 

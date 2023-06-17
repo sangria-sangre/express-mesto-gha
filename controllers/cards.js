@@ -25,7 +25,7 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  cardSchema.findByIdAndRemove(cardId)
+  cardSchema.findById(cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
